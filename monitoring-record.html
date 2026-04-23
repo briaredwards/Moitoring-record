@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitoring Record – Response to Medication</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #eef4fb;
+    padding: 12px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1.5px solid #a8c8e8;
+    border-radius: 10px;
+    padding: 16px;
+    max-width: 900px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a3a5c;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #d0e4f4;
+  }
+
+  /* Table */
+  .monitor-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .monitor-table thead th {
+    background: #2c6fad;
+    color: #fff;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 7px 8px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .monitor-table thead th:first-child { border-radius: 6px 0 0 0; }
+  .monitor-table thead th:last-child  { border-radius: 0 6px 0 0; }
+
+  .monitor-table tbody tr {
+    border-bottom: 1px solid #e4eef7;
+    transition: background 0.15s;
+  }
+  .monitor-table tbody tr:nth-child(even) { background: #f4f9ff; }
+  .monitor-table tbody tr:hover { background: #e8f2fb; }
+
+  .monitor-table tbody td {
+    padding: 5px 5px;
+    vertical-align: middle;
+  }
+
+  /* Inputs */
+  .monitor-table input {
+    width: 100%;
+    border: 1px solid #b8d0e8;
+    border-radius: 5px;
+    padding: 5px 7px;
+    font-size: 13px;
+    color: #1a3a5c;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -moz-appearance: textfield;
+  }
+  .monitor-table input:focus {
+    outline: none;
+    border-color: #2c6fad;
+    box-shadow: 0 0 0 2px rgba(44,111,173,0.15);
+  }
+  .monitor-table input[type=number]::-webkit-inner-spin-button,
+  .monitor-table input[type=number]::-webkit-outer-spin-button {
+    opacity: 1;
+  }
+
+  /* Out of range highlight */
+  .monitor-table input.out-of-range {
+    border-color: #e05c5c;
+    background: #fff5f5;
+  }
+  .monitor-table input.out-of-range:focus {
+    box-shadow: 0 0 0 2px rgba(224,92,92,0.15);
+  }
+
+  /* Time cell */
+  .time-input { font-weight: 600; color: #1a3a5c; min-width: 72px; }
+
+  /* Action buttons per row */
+  .row-actions { display: flex; gap: 4px; align-items: center; }
+  .btn-icon {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 3px 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1;
+    transition: background 0.15s;
+  }
+  .btn-icon:hover { background: #d0e4f4; }
+  .btn-icon.delete:hover { background: #fde8e8; }
+
+  /* Footer */
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .btn-add {
+    background: #2c6fad;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-add:hover { background: #1a5490; transform: translateY(-1px); }
+  .btn-add:active { transform: translateY(0); }
+
+  .btn-clear {
+    background: transparent;
+    color: #888;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-clear:hover { background: #fde8e8; border-color: #e05c5c; color: #e05c5c; }
+
+  /* Range hints row */
+  .range-hint {
+    font-size: 10px;
+    color: #7a9bbf;
+    text-align: center;
+    padding: 0 5px 4px;
+    display: block;
+  }
+
+  /* Hidden output */
+  #jotform-output {
+    margin-top: 14px;
+    font-size: 11px;
+    color: #666;
+  }
+  #jotform-output textarea {
+    width: 100%;
+    height: 60px;
+    font-size: 11px;
+    border: 1px solid #d0e4f4;
+    border-radius: 5px;
+    padding: 6px;
+    color: #444;
+    background: #f8fbff;
+    resize: vertical;
+  }
+  #jotform-output label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #2c6fad;
+  }
+
+  /* Row count badge */
+  .row-count {
+    font-size: 12px;
+    color: #7a9bbf;
+    font-weight: 500;
+  }
+
+  /* Responsive: scroll on small screens */
+  .table-wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-title">📋 Monitoring Record – Response to Medication</div>
+
+  <div class="table-wrap">
+    <table class="monitor-table" id="monitorTable">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>HR<br><span style="font-weight:400;font-size:10px;opacity:0.8">60–100</span></th>
+          <th>SPO2<br><span style="font-weight:400;font-size:10px;opacity:0.8">>95%</span></th>
+          <th>BP<br><span style="font-weight:400;font-size:10px;opacity:0.8">sys/dia</span></th>
+          <th>MAP<br><span style="font-weight:400;font-size:10px;opacity:0.8">70–105</span></th>
+          <th>RR<br><span style="font-weight:400;font-size:10px;opacity:0.8">12–20</span></th>
+          <th>EtCO2<br><span style="font-weight:400;font-size:10px;opacity:0.8">35–45</span></th>
+          <th>BIS<br><span style="font-weight:400;font-size:10px;opacity:0.8">40–60</span></th>
+          <th>Propofol<br><span style="font-weight:400;font-size:10px;opacity:0.8">mcg/mL</span></th>
+          <th>Remifentanil<br><span style="font-weight:400;font-size:10px;opacity:0.8">ng/mL</span></th>
+          <th style="width:52px"></th>
+        </tr>
+      </thead>
+      <tbody id="monitorBody">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn-add" onclick="addRow()">＋ Add Row</button>
+      <button class="btn-clear" onclick="clearAll()">Clear All</button>
+    </div>
+    <span class="row-count" id="rowCount">0 rows</span>
+  </div>
+
+  <div id="jotform-output">
+    <label>📤 Form Submission Data (auto-updates):</label>
+    <textarea id="outputField" readonly placeholder="Data will appear here as you fill in values..."></textarea>
+  </div>
+</div>
+
+<script>
+  // ── Range rules for highlighting ──────────────────────────────────────────
+  const RANGES = {
+    hr:    { min: 60,  max: 100 },
+    spo2:  { min: 95,  max: 100 },
+    map:   { min: 70,  max: 105 },
+    rr:    { min: 12,  max: 20  },
+    etco2: { min: 35,  max: 45  },
+    bis:   { min: 40,  max: 60  },
+  };
+
+  let rows = [];
+  let nextId = 1;
+
+  // ── Time helpers ───────────────────────────────────────────────────────────
+  function parseTime(str) {
+    const m = str.match(/^(\d{1,2}):?(\d{2})$/);
+    if (!m) return null;
+    return parseInt(m[1]) * 60 + parseInt(m[2]);
+  }
+
+  function formatTime(mins) {
+    const h = Math.floor(((mins % 1440) + 1440) % 1440 / 60);
+    const m = ((mins % 1440) + 1440) % 1440 % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  }
+
+  function getLastTime() {
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const t = parseTime(rows[i].time || '');
+      if (t !== null) return t;
+    }
+    return null;
+  }
+
+  // ── Row management ─────────────────────────────────────────────────────────
+  function addRow(duplicate = true) {
+    const lastTime = getLastTime();
+    const newTime  = lastTime !== null ? formatTime(lastTime + 5) : '';
+
+    let newRow = {
+      id: nextId++,
+      time: newTime,
+      hr: '', spo2: '', bp: '', map: '',
+      rr: '', etco2: '', bis: '',
+      propofol: '', remifentanil: ''
+    };
+
+    // Duplicate previous row values (except time)
+    if (duplicate && rows.length > 0) {
+      const prev = rows[rows.length - 1];
+      newRow = { ...prev, id: newRow.id, time: newTime };
+    }
+
+    rows.push(newRow);
+    renderTable();
+    updateOutput();
+
+    // Focus the time cell of new row if it's blank
+    setTimeout(() => {
+      const lastRow = document.querySelector(`tr[data-id="${newRow.id}"] .time-input`);
+      if (lastRow) {
+        if (!newTime) lastRow.focus();
+        else lastRow.closest('tr').querySelector('input[data-field="hr"]')?.focus();
+      }
+    }, 50);
+  }
+
+  function deleteRow(id) {
+    rows = rows.filter(r => r.id !== id);
+    renderTable();
+    updateOutput();
+  }
+
+  function clearAll() {
+    if (rows.length === 0) return;
+    if (confirm('Clear all rows?')) {
+      rows = [];
+      renderTable();
+      updateOutput();
+    }
+  }
+
+  function updateField(id, field, value) {
+    const row = rows.find(r => r.id === id);
+    if (row) {
+      row[field] = value;
+      updateOutput();
+      checkRange(id, field, value);
+    }
+  }
+
+  function checkRange(id, field, value) {
+    if (!RANGES[field]) return;
+    const input = document.querySelector(`tr[data-id="${id}"] input[data-field="${field}"]`);
+    if (!input || value === '') { input && input.classList.remove('out-of-range'); return; }
+    const num = parseFloat(value);
+    const { min, max } = RANGES[field];
+    input.classList.toggle('out-of-range', num < min || num > max);
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+  function renderTable() {
+    const tbody = document.getElementById('monitorBody');
+    tbody.innerHTML = '';
+
+    rows.forEach((row, idx) => {
+      const tr = document.createElement('tr');
+      tr.dataset.id = row.id;
+      tr.innerHTML = `
+        <td>
+          <input class="time-input" type="text" placeholder="HH:MM"
+            data-field="time" value="${row.time}"
+            oninput="handleTimeInput(${row.id}, this.value)"
+            onblur="formatTimeInput(${row.id}, this)" maxlength="5">
+        </td>
+        <td><input type="number" data-field="hr" value="${row.hr}" min="0" max="300"
+          oninput="updateField(${row.id},'hr',this.value)"></td>
+        <td><input type="number" data-field="spo2" value="${row.spo2}" min="0" max="100"
+          oninput="updateField(${row.id},'spo2',this.value)"></td>
+        <td><input type="text" data-field="bp" value="${row.bp}" placeholder="120/80"
+          oninput="updateField(${row.id},'bp',this.value)" style="min-width:80px"></td>
+        <td><input type="number" data-field="map" value="${row.map}" min="0" max="200"
+          oninput="updateField(${row.id},'map',this.value)"></td>
+        <td><input type="number" data-field="rr" value="${row.rr}" min="0" max="60"
+          oninput="updateField(${row.id},'rr',this.value)"></td>
+        <td><input type="number" data-field="etco2" value="${row.etco2}" min="0" max="100"
+          oninput="updateField(${row.id},'etco2',this.value)"></td>
+        <td><input type="number" data-field="bis" value="${row.bis}" min="0" max="100"
+          oninput="updateField(${row.id},'bis',this.value)"></td>
+        <td><input type="number" data-field="propofol" value="${row.propofol}" min="0" max="20" step="0.1"
+          oninput="updateField(${row.id},'propofol',this.value)"></td>
+        <td><input type="number" data-field="remifentanil" value="${row.remifentanil}" min="0" max="20" step="0.1"
+          oninput="updateField(${row.id},'remifentanil',this.value)"></td>
+        <td>
+          <div class="row-actions">
+            <button class="btn-icon delete" onclick="deleteRow(${row.id})" title="Delete row">🗑</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+
+      // Re-apply range highlights after render
+      ['hr','spo2','map','rr','etco2','bis'].forEach(f => {
+        if (row[f] !== '') checkRange(row.id, f, row[f]);
+      });
+    });
+
+    document.getElementById('rowCount').textContent =
+      rows.length === 0 ? '0 rows' : `${rows.length} row${rows.length > 1 ? 's' : ''}`;
+  }
+
+  // ── Time input handling ────────────────────────────────────────────────────
+  function handleTimeInput(id, value) {
+    // Auto-insert colon after 2 digits
+    let v = value.replace(/[^0-9:]/g, '');
+    if (v.length === 2 && !v.includes(':')) v += ':';
+    const row = rows.find(r => r.id === id);
+    if (row) row.time = v;
+
+    const input = document.querySelector(`tr[data-id="${id}"] .time-input`);
+    if (input && input.value !== v) input.value = v;
+    updateOutput();
+  }
+
+  function formatTimeInput(id, input) {
+    const parsed = parseTime(input.value);
+    if (parsed !== null) {
+      const formatted = formatTime(parsed);
+      input.value = formatted;
+      const row = rows.find(r => r.id === id);
+      if (row) row.time = formatted;
+      updateOutput();
+    }
+  }
+
+  // ── Output for JotForm hidden field ───────────────────────────────────────
+  function updateOutput() {
+    const lines = rows.map((r, i) =>
+      `Row ${i+1}: Time=${r.time||'-'} | HR=${r.hr||'-'} | SPO2=${r.spo2||'-'} | BP=${r.bp||'-'} | MAP=${r.map||'-'} | RR=${r.rr||'-'} | EtCO2=${r.etco2||'-'} | BIS=${r.bis||'-'} | Propofol=${r.propofol||'-'} mcg/mL | Remifentanil=${r.remifentanil||'-'} ng/mL`
+    ).join('\n');
+
+    const out = document.getElementById('outputField');
+    out.value = lines || '';
+
+    // Push to JotForm hidden field if embedded
+    try {
+      const jfField = window.parent.document.querySelector('input[name="q_monitoringRecord"], textarea[name="q_monitoringRecord"]');
+      if (jfField) jfField.value = lines;
+    } catch(e) {}
+
+    // Also dispatch event for JotForm listeners
+    try {
+      window.parent.postMessage({ type: 'monitoringRecord', data: lines }, '*');
+    } catch(e) {}
+  }
+
+  // ── Init: start with one blank row ────────────────────────────────────────
+  addRow(false);
+</script>
+</body>
+</html>
