@@ -18,7 +18,6 @@
     border: 1.5px solid #a8c8e8;
     border-radius: 10px;
     padding: 16px;
-    max-width: 900px;
   }
 
   .card-title {
@@ -30,23 +29,34 @@
     border-bottom: 1px solid #d0e4f4;
   }
 
-  /* Table */
+  .table-wrap { overflow-x: auto; }
+
   .monitor-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
+    min-width: 700px;
   }
 
   .monitor-table thead th {
     background: #2c6fad;
     color: #fff;
     font-weight: 600;
-    font-size: 11.5px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    padding: 7px 8px;
-    text-align: left;
+    padding: 8px 6px;
+    text-align: center;
     white-space: nowrap;
+  }
+
+  .monitor-table thead th .unit {
+    display: block;
+    font-weight: 400;
+    font-size: 10px;
+    opacity: 0.8;
+    text-transform: none;
+    letter-spacing: 0;
   }
 
   .monitor-table thead th:first-child { border-radius: 6px 0 0 0; }
@@ -60,60 +70,70 @@
   .monitor-table tbody tr:hover { background: #e8f2fb; }
 
   .monitor-table tbody td {
-    padding: 5px 5px;
+    padding: 4px 4px;
     vertical-align: middle;
+    text-align: center;
   }
 
-  /* Inputs */
   .monitor-table input {
     width: 100%;
     border: 1px solid #b8d0e8;
     border-radius: 5px;
-    padding: 5px 7px;
+    padding: 5px 4px;
     font-size: 13px;
     color: #1a3a5c;
     background: #fff;
+    text-align: center;
     transition: border-color 0.2s, box-shadow 0.2s;
-    -moz-appearance: textfield;
   }
   .monitor-table input:focus {
     outline: none;
     border-color: #2c6fad;
     box-shadow: 0 0 0 2px rgba(44,111,173,0.15);
   }
-  .monitor-table input[type=number]::-webkit-inner-spin-button,
-  .monitor-table input[type=number]::-webkit-outer-spin-button {
-    opacity: 1;
-  }
 
-  /* Out of range highlight */
+  /* Hide spinners by default, show on hover/focus */
+  .monitor-table input[type=number] { -moz-appearance: textfield; }
+  .monitor-table input[type=number]::-webkit-inner-spin-button,
+  .monitor-table input[type=number]::-webkit-outer-spin-button { opacity: 0; transition: opacity 0.2s; }
+  .monitor-table input[type=number]:hover::-webkit-inner-spin-button,
+  .monitor-table input[type=number]:focus::-webkit-inner-spin-button,
+  .monitor-table input[type=number]:hover::-webkit-outer-spin-button,
+  .monitor-table input[type=number]:focus::-webkit-outer-spin-button { opacity: 1; }
+
   .monitor-table input.out-of-range {
     border-color: #e05c5c;
     background: #fff5f5;
-  }
-  .monitor-table input.out-of-range:focus {
-    box-shadow: 0 0 0 2px rgba(224,92,92,0.15);
+    color: #c0392b;
+    font-weight: 600;
   }
 
-  /* Time cell */
-  .time-input { font-weight: 600; color: #1a3a5c; min-width: 72px; }
+  .col-time   { width: 80px; }
+  .col-hr     { width: 62px; }
+  .col-spo2   { width: 62px; }
+  .col-bp     { width: 95px; }
+  .col-map    { width: 62px; }
+  .col-rr     { width: 55px; }
+  .col-etco2  { width: 62px; }
+  .col-bis    { width: 55px; }
+  .col-prop   { width: 78px; }
+  .col-remi   { width: 78px; }
+  .col-action { width: 36px; }
 
-  /* Action buttons per row */
-  .row-actions { display: flex; gap: 4px; align-items: center; }
-  .btn-icon {
+  .time-input { font-weight: 600; }
+
+  .btn-delete {
     border: none;
     background: none;
     cursor: pointer;
-    padding: 3px 5px;
+    padding: 4px 6px;
     border-radius: 4px;
-    font-size: 14px;
-    line-height: 1;
-    transition: background 0.15s;
+    font-size: 12px;
+    color: #aaa;
+    transition: all 0.15s;
   }
-  .btn-icon:hover { background: #d0e4f4; }
-  .btn-icon.delete:hover { background: #fde8e8; }
+  .btn-delete:hover { background: #fde8e8; color: #e05c5c; }
 
-  /* Footer */
   .footer {
     display: flex;
     align-items: center;
@@ -152,94 +172,60 @@
   }
   .btn-clear:hover { background: #fde8e8; border-color: #e05c5c; color: #e05c5c; }
 
-  /* Range hints row */
-  .range-hint {
-    font-size: 10px;
-    color: #7a9bbf;
-    text-align: center;
-    padding: 0 5px 4px;
-    display: block;
-  }
-
-  /* Hidden output */
-  #jotform-output {
-    margin-top: 14px;
-    font-size: 11px;
-    color: #666;
-  }
-  #jotform-output textarea {
-    width: 100%;
-    height: 60px;
-    font-size: 11px;
-    border: 1px solid #d0e4f4;
-    border-radius: 5px;
-    padding: 6px;
-    color: #444;
-    background: #f8fbff;
-    resize: vertical;
-  }
-  #jotform-output label {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 600;
-    color: #2c6fad;
-  }
-
-  /* Row count badge */
   .row-count {
     font-size: 12px;
     color: #7a9bbf;
     font-weight: 500;
   }
 
-  /* Responsive: scroll on small screens */
-  .table-wrap { overflow-x: auto; }
+  /* Completely hidden output for JotForm */
+  #outputField {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
 
 <div class="card">
-  <div class="card-title">📋 Monitoring Record – Response to Medication</div>
+  <div class="card-title">Monitoring Record – Response to Medication</div>
 
   <div class="table-wrap">
-    <table class="monitor-table" id="monitorTable">
+    <table class="monitor-table">
       <thead>
         <tr>
-          <th>Time</th>
-          <th>HR<br><span style="font-weight:400;font-size:10px;opacity:0.8">60–100</span></th>
-          <th>SPO2<br><span style="font-weight:400;font-size:10px;opacity:0.8">>95%</span></th>
-          <th>BP<br><span style="font-weight:400;font-size:10px;opacity:0.8">sys/dia</span></th>
-          <th>MAP<br><span style="font-weight:400;font-size:10px;opacity:0.8">70–105</span></th>
-          <th>RR<br><span style="font-weight:400;font-size:10px;opacity:0.8">12–20</span></th>
-          <th>EtCO2<br><span style="font-weight:400;font-size:10px;opacity:0.8">35–45</span></th>
-          <th>BIS<br><span style="font-weight:400;font-size:10px;opacity:0.8">40–60</span></th>
-          <th>Propofol<br><span style="font-weight:400;font-size:10px;opacity:0.8">mcg/mL</span></th>
-          <th>Remifentanil<br><span style="font-weight:400;font-size:10px;opacity:0.8">ng/mL</span></th>
-          <th style="width:52px"></th>
+          <th class="col-time">Time</th>
+          <th class="col-hr">HR<span class="unit">60–100</span></th>
+          <th class="col-spo2">SPO2<span class="unit">&gt;95%</span></th>
+          <th class="col-bp">BP<span class="unit">sys/dia</span></th>
+          <th class="col-map">MAP<span class="unit">70–105</span></th>
+          <th class="col-rr">RR<span class="unit">12–20</span></th>
+          <th class="col-etco2">EtCO2<span class="unit">35–45</span></th>
+          <th class="col-bis">BIS<span class="unit">40–60</span></th>
+          <th class="col-prop">Propofol<span class="unit">mcg/mL</span></th>
+          <th class="col-remi">Remifentanil<span class="unit">ng/mL</span></th>
+          <th class="col-action"></th>
         </tr>
       </thead>
-      <tbody id="monitorBody">
-        <!-- rows injected by JS -->
-      </tbody>
+      <tbody id="monitorBody"></tbody>
     </table>
   </div>
 
   <div class="footer">
     <div style="display:flex;gap:8px;align-items:center;">
       <button class="btn-add" onclick="addRow()">＋ Add Row</button>
-      <button class="btn-clear" onclick="clearAll()">Clear All</button>
     </div>
     <span class="row-count" id="rowCount">0 rows</span>
   </div>
-
-  <div id="jotform-output">
-    <label>📤 Form Submission Data (auto-updates):</label>
-    <textarea id="outputField" readonly placeholder="Data will appear here as you fill in values..."></textarea>
-  </div>
 </div>
 
+<textarea id="outputField" name="q_monitoringRecord"></textarea>
+
 <script>
-  // ── Range rules for highlighting ──────────────────────────────────────────
   const RANGES = {
     hr:    { min: 60,  max: 100 },
     spo2:  { min: 95,  max: 100 },
@@ -252,58 +238,66 @@
   let rows = [];
   let nextId = 1;
 
-  // ── Time helpers ───────────────────────────────────────────────────────────
   function parseTime(str) {
-    const m = str.match(/^(\d{1,2}):?(\d{2})$/);
-    if (!m) return null;
-    return parseInt(m[1]) * 60 + parseInt(m[2]);
+    if (!str) return null;
+    const clean = str.replace(':', '');
+    if (clean.length < 3 || clean.length > 4) return null;
+    const h = parseInt(clean.slice(0, clean.length - 2));
+    const m = parseInt(clean.slice(-2));
+    if (isNaN(h) || isNaN(m) || h > 23 || m > 59) return null;
+    return h * 60 + m;
   }
 
-  function formatTime(mins) {
-    const h = Math.floor(((mins % 1440) + 1440) % 1440 / 60);
-    const m = ((mins % 1440) + 1440) % 1440 % 60;
-    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  function formatTime(totalMins) {
+    const norm = ((totalMins % 1440) + 1440) % 1440;
+    return String(Math.floor(norm / 60)).padStart(2,'0') + ':' + String(norm % 60).padStart(2,'0');
   }
 
   function getLastTime() {
     for (let i = rows.length - 1; i >= 0; i--) {
-      const t = parseTime(rows[i].time || '');
+      const t = parseTime(rows[i].time);
       if (t !== null) return t;
     }
     return null;
   }
 
-  // ── Row management ─────────────────────────────────────────────────────────
-  function addRow(duplicate = true) {
+  function addRow() {
     const lastTime = getLastTime();
     const newTime  = lastTime !== null ? formatTime(lastTime + 5) : '';
+    let newRow;
 
-    let newRow = {
-      id: nextId++,
-      time: newTime,
-      hr: '', spo2: '', bp: '', map: '',
-      rr: '', etco2: '', bis: '',
-      propofol: '', remifentanil: ''
-    };
-
-    // Duplicate previous row values (except time)
-    if (duplicate && rows.length > 0) {
+    if (rows.length > 0) {
       const prev = rows[rows.length - 1];
-      newRow = { ...prev, id: newRow.id, time: newTime };
+      // Duplicate previous values but give fresh id and new time
+      newRow = {
+        id: nextId++,
+        time: newTime,
+        hr:           prev.hr,
+        spo2:         prev.spo2,
+        bp:           prev.bp,
+        map:          prev.map,
+        rr:           prev.rr,
+        etco2:        prev.etco2,
+        bis:          prev.bis,
+        propofol:     prev.propofol,
+        remifentanil: prev.remifentanil,
+      };
+    } else {
+      newRow = { id: nextId++, time: newTime, hr:'', spo2:'', bp:'', map:'', rr:'', etco2:'', bis:'', propofol:'', remifentanil:'' };
     }
 
     rows.push(newRow);
     renderTable();
     updateOutput();
 
-    // Focus the time cell of new row if it's blank
     setTimeout(() => {
-      const lastRow = document.querySelector(`tr[data-id="${newRow.id}"] .time-input`);
-      if (lastRow) {
-        if (!newTime) lastRow.focus();
-        else lastRow.closest('tr').querySelector('input[data-field="hr"]')?.focus();
-      }
-    }, 50);
+      const tr = document.querySelector(`tr[data-id="${newRow.id}"]`);
+      if (!tr) return;
+      const focus = newTime
+        ? tr.querySelector('input[data-field="hr"]')
+        : tr.querySelector('.time-input');
+      focus && focus.focus();
+    }, 40);
   }
 
   function deleteRow(id) {
@@ -313,130 +307,113 @@
   }
 
   function clearAll() {
-    if (rows.length === 0) return;
-    if (confirm('Clear all rows?')) {
-      rows = [];
-      renderTable();
-      updateOutput();
-    }
+    if (!rows.length) return;
+    if (confirm('Clear all rows?')) { rows = []; renderTable(); updateOutput(); }
   }
 
   function updateField(id, field, value) {
     const row = rows.find(r => r.id === id);
-    if (row) {
-      row[field] = value;
-      updateOutput();
-      checkRange(id, field, value);
-    }
+    if (!row) return;
+    row[field] = value;
+    updateOutput();
+    if (RANGES[field]) applyRange(id, field, value);
   }
 
-  function checkRange(id, field, value) {
-    if (!RANGES[field]) return;
+  function applyRange(id, field, value) {
     const input = document.querySelector(`tr[data-id="${id}"] input[data-field="${field}"]`);
-    if (!input || value === '') { input && input.classList.remove('out-of-range'); return; }
-    const num = parseFloat(value);
+    if (!input) return;
+    if (value === '') { input.classList.remove('out-of-range'); return; }
+    const n = parseFloat(value);
     const { min, max } = RANGES[field];
-    input.classList.toggle('out-of-range', num < min || num > max);
+    input.classList.toggle('out-of-range', isNaN(n) || n < min || n > max);
   }
 
-  // ── Render ─────────────────────────────────────────────────────────────────
+  function esc(v) {
+    return (v === undefined || v === null) ? '' : String(v).replace(/"/g,'&quot;');
+  }
+
   function renderTable() {
     const tbody = document.getElementById('monitorBody');
     tbody.innerHTML = '';
-
-    rows.forEach((row, idx) => {
+    rows.forEach(row => {
       const tr = document.createElement('tr');
       tr.dataset.id = row.id;
       tr.innerHTML = `
-        <td>
-          <input class="time-input" type="text" placeholder="HH:MM"
-            data-field="time" value="${row.time}"
-            oninput="handleTimeInput(${row.id}, this.value)"
-            onblur="formatTimeInput(${row.id}, this)" maxlength="5">
-        </td>
-        <td><input type="number" data-field="hr" value="${row.hr}" min="0" max="300"
+        <td><input class="time-input" type="text" data-field="time"
+          value="${esc(row.time)}" placeholder="HH:MM" maxlength="5"
+          oninput="onTimeInput(${row.id},this)"
+          onblur="onTimeBlur(${row.id},this)"></td>
+        <td><input type="number" data-field="hr" value="${esc(row.hr)}"
+          min="0" max="300" step="1" placeholder="—"
           oninput="updateField(${row.id},'hr',this.value)"></td>
-        <td><input type="number" data-field="spo2" value="${row.spo2}" min="0" max="100"
+        <td><input type="number" data-field="spo2" value="${esc(row.spo2)}"
+          min="0" max="100" step="1" placeholder="—"
           oninput="updateField(${row.id},'spo2',this.value)"></td>
-        <td><input type="text" data-field="bp" value="${row.bp}" placeholder="120/80"
-          oninput="updateField(${row.id},'bp',this.value)" style="min-width:80px"></td>
-        <td><input type="number" data-field="map" value="${row.map}" min="0" max="200"
+        <td><input type="text" data-field="bp" value="${esc(row.bp)}"
+          placeholder="120/80" maxlength="12"
+          oninput="updateField(${row.id},'bp',this.value)"></td>
+        <td><input type="number" data-field="map" value="${esc(row.map)}"
+          min="0" max="200" step="1" placeholder="—"
           oninput="updateField(${row.id},'map',this.value)"></td>
-        <td><input type="number" data-field="rr" value="${row.rr}" min="0" max="60"
+        <td><input type="number" data-field="rr" value="${esc(row.rr)}"
+          min="0" max="60" step="1" placeholder="—"
           oninput="updateField(${row.id},'rr',this.value)"></td>
-        <td><input type="number" data-field="etco2" value="${row.etco2}" min="0" max="100"
+        <td><input type="number" data-field="etco2" value="${esc(row.etco2)}"
+          min="0" max="100" step="1" placeholder="—"
           oninput="updateField(${row.id},'etco2',this.value)"></td>
-        <td><input type="number" data-field="bis" value="${row.bis}" min="0" max="100"
+        <td><input type="number" data-field="bis" value="${esc(row.bis)}"
+          min="0" max="100" step="1" placeholder="—"
           oninput="updateField(${row.id},'bis',this.value)"></td>
-        <td><input type="number" data-field="propofol" value="${row.propofol}" min="0" max="20" step="0.1"
+        <td><input type="number" data-field="propofol" value="${esc(row.propofol)}"
+          min="0" max="20" step="0.1" placeholder="—"
           oninput="updateField(${row.id},'propofol',this.value)"></td>
-        <td><input type="number" data-field="remifentanil" value="${row.remifentanil}" min="0" max="20" step="0.1"
+        <td><input type="number" data-field="remifentanil" value="${esc(row.remifentanil)}"
+          min="0" max="20" step="0.1" placeholder="—"
           oninput="updateField(${row.id},'remifentanil',this.value)"></td>
-        <td>
-          <div class="row-actions">
-            <button class="btn-icon delete" onclick="deleteRow(${row.id})" title="Delete row">🗑</button>
-          </div>
-        </td>
+        <td><button class="btn-delete" onclick="deleteRow(${row.id})" title="Delete">✕</button></td>
       `;
       tbody.appendChild(tr);
-
-      // Re-apply range highlights after render
-      ['hr','spo2','map','rr','etco2','bis'].forEach(f => {
-        if (row[f] !== '') checkRange(row.id, f, row[f]);
-      });
+      Object.keys(RANGES).forEach(f => { if (row[f] !== '') applyRange(row.id, f, row[f]); });
     });
-
     document.getElementById('rowCount').textContent =
-      rows.length === 0 ? '0 rows' : `${rows.length} row${rows.length > 1 ? 's' : ''}`;
+      rows.length === 0 ? '0 rows' : `${rows.length} row${rows.length !== 1 ? 's' : ''}`;
   }
 
-  // ── Time input handling ────────────────────────────────────────────────────
-  function handleTimeInput(id, value) {
-    // Auto-insert colon after 2 digits
-    let v = value.replace(/[^0-9:]/g, '');
-    if (v.length === 2 && !v.includes(':')) v += ':';
+  function onTimeInput(id, input) {
+    let v = input.value.replace(/[^0-9:]/g, '');
+    if (v.length === 2 && !v.includes(':')) { v += ':'; input.value = v; }
     const row = rows.find(r => r.id === id);
-    if (row) row.time = v;
-
-    const input = document.querySelector(`tr[data-id="${id}"] .time-input`);
-    if (input && input.value !== v) input.value = v;
-    updateOutput();
+    if (row) { row.time = v; updateOutput(); }
   }
 
-  function formatTimeInput(id, input) {
+  function onTimeBlur(id, input) {
     const parsed = parseTime(input.value);
-    if (parsed !== null) {
+    const row = rows.find(r => r.id === id);
+    if (parsed !== null && row) {
       const formatted = formatTime(parsed);
       input.value = formatted;
-      const row = rows.find(r => r.id === id);
-      if (row) row.time = formatted;
+      row.time = formatted;
       updateOutput();
     }
   }
 
-  // ── Output for JotForm hidden field ───────────────────────────────────────
   function updateOutput() {
+    const f = v => (v !== '' && v !== undefined) ? v : '-';
     const lines = rows.map((r, i) =>
-      `Row ${i+1}: Time=${r.time||'-'} | HR=${r.hr||'-'} | SPO2=${r.spo2||'-'} | BP=${r.bp||'-'} | MAP=${r.map||'-'} | RR=${r.rr||'-'} | EtCO2=${r.etco2||'-'} | BIS=${r.bis||'-'} | Propofol=${r.propofol||'-'} mcg/mL | Remifentanil=${r.remifentanil||'-'} ng/mL`
+      `Row ${i+1}: Time=${f(r.time)} | HR=${f(r.hr)} | SPO2=${f(r.spo2)} | BP=${f(r.bp)} | MAP=${f(r.map)} | RR=${f(r.rr)} | EtCO2=${f(r.etco2)} | BIS=${f(r.bis)} | Propofol=${f(r.propofol)} | Remifentanil=${f(r.remifentanil)}`
     ).join('\n');
 
-    const out = document.getElementById('outputField');
-    out.value = lines || '';
+    document.getElementById('outputField').value = lines;
 
-    // Push to JotForm hidden field if embedded
     try {
-      const jfField = window.parent.document.querySelector('input[name="q_monitoringRecord"], textarea[name="q_monitoringRecord"]');
-      if (jfField) jfField.value = lines;
+      const jf = window.parent.document.querySelector('input[name="q_monitoringRecord"],textarea[name="q_monitoringRecord"]');
+      if (jf) jf.value = lines;
     } catch(e) {}
-
-    // Also dispatch event for JotForm listeners
-    try {
-      window.parent.postMessage({ type: 'monitoringRecord', data: lines }, '*');
-    } catch(e) {}
+    try { window.parent.postMessage({ type: 'monitoringRecord', data: lines }, '*'); } catch(e) {}
   }
 
-  // ── Init: start with one blank row ────────────────────────────────────────
-  addRow(false);
+  // Start with one blank row
+  addRow();
 </script>
 </body>
 </html>
