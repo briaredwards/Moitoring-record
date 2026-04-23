@@ -10,14 +10,14 @@
   body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     background: #eef4fb;
-    padding: 12px;
+    padding: 6px;
   }
 
   .card {
     background: #fff;
     border: 1.5px solid #a8c8e8;
     border-radius: 10px;
-    padding: 16px;
+    padding: 10px;
   }
 
   .card-title {
@@ -29,31 +29,32 @@
     border-bottom: 1px solid #d0e4f4;
   }
 
-  .table-wrap { overflow-x: auto; }
+  .table-wrap { overflow-x: hidden; }
 
   .monitor-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
-    min-width: 700px;
+    font-size: 11.5px;
+    table-layout: fixed;
   }
 
   .monitor-table thead th {
     background: #2c6fad;
     color: #fff;
     font-weight: 600;
-    font-size: 11px;
+    font-size: 10.5px;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    padding: 8px 6px;
+    letter-spacing: 0.03em;
+    padding: 6px 3px;
     text-align: center;
     white-space: nowrap;
+    overflow: hidden;
   }
 
   .monitor-table thead th .unit {
     display: block;
     font-weight: 400;
-    font-size: 10px;
+    font-size: 9.5px;
     opacity: 0.8;
     text-transform: none;
     letter-spacing: 0;
@@ -70,7 +71,7 @@
   .monitor-table tbody tr:hover { background: #e8f2fb; }
 
   .monitor-table tbody td {
-    padding: 4px 4px;
+    padding: 3px 2px;
     vertical-align: middle;
     text-align: center;
   }
@@ -78,9 +79,9 @@
   .monitor-table input {
     width: 100%;
     border: 1px solid #b8d0e8;
-    border-radius: 5px;
-    padding: 5px 4px;
-    font-size: 13px;
+    border-radius: 4px;
+    padding: 4px 2px;
+    font-size: 11.5px;
     color: #1a3a5c;
     background: #fff;
     text-align: center;
@@ -108,17 +109,17 @@
     font-weight: 600;
   }
 
-  .col-time   { width: 80px; }
-  .col-hr     { width: 62px; }
-  .col-spo2   { width: 62px; }
-  .col-bp     { width: 95px; }
-  .col-map    { width: 62px; }
-  .col-rr     { width: 55px; }
-  .col-etco2  { width: 62px; }
-  .col-bis    { width: 55px; }
-  .col-prop   { width: 78px; }
-  .col-remi   { width: 78px; }
-  .col-action { width: 36px; }
+  .col-time   { width: 9%; }
+  .col-hr     { width: 7%; }
+  .col-spo2   { width: 7%; }
+  .col-bp     { width: 12%; }
+  .col-map    { width: 7%; }
+  .col-rr     { width: 7%; }
+  .col-etco2  { width: 8%; }
+  .col-bis    { width: 7%; }
+  .col-prop   { width: 10%; }
+  .col-remi   { width: 10%; }
+  .col-action { width: 4%; }
 
   .time-input { font-weight: 600; }
 
@@ -206,8 +207,8 @@
           <th class="col-rr">RR<span class="unit">12–20</span></th>
           <th class="col-etco2">EtCO2<span class="unit">35–45</span></th>
           <th class="col-bis">BIS<span class="unit">40–60</span></th>
-          <th class="col-prop">Propofol<span class="unit">mcg/mL</span></th>
-          <th class="col-remi">Remifentanil<span class="unit">ng/mL</span></th>
+          <th class="col-prop">Prop.<span class="unit">mcg/mL</span></th>
+          <th class="col-remi">Remi.<span class="unit">ng/mL</span></th>
           <th class="col-action"></th>
         </tr>
       </thead>
