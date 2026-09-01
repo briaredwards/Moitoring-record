@@ -112,7 +112,8 @@
   .col-time   { width: 9%; }
   .col-hr     { width: 7%; }
   .col-spo2   { width: 7%; }
-  .col-bp     { width: 12%; }
+  .col-o2     { width: 6%; }
+  .col-bp     { width: 11%; }
   .col-map    { width: 7%; }
   .col-rr     { width: 7%; }
   .col-etco2  { width: 8%; }
@@ -200,15 +201,16 @@
       <thead>
         <tr>
           <th class="col-time">Time</th>
-          <th class="col-hr">HR<span class="unit">60–100</span></th>
-          <th class="col-spo2">SPO2<span class="unit">&gt;95%</span></th>
+          <th class="col-hr">HR<span class="unit">50–110</span></th>
+          <th class="col-spo2">SPO2<span class="unit">&gt;94%</span></th>
+          <th class="col-o2">O2<span class="unit">l/min 0–5</span></th>
           <th class="col-bp">BP<span class="unit">sys/dia</span></th>
-          <th class="col-map">MAP<span class="unit">70–105</span></th>
-          <th class="col-rr">RR<span class="unit">12–20</span></th>
+          <th class="col-map">MAP<span class="unit">65–105</span></th>
+          <th class="col-rr">RR<span class="unit">8–20</span></th>
           <th class="col-etco2">EtCO2<span class="unit">35–45</span></th>
-          <th class="col-bis">BIS<span class="unit">40–60</span></th>
-          <th class="col-prop">Prop.<span class="unit">mcg/mL</span></th>
-          <th class="col-remi">Remi.<span class="unit">ng/mL</span></th>
+          <th class="col-bis">BIS<span class="unit">70–100</span></th>
+          <th class="col-prop">Prop.Cet<span class="unit">mcg/mL</span></th>
+          <th class="col-remi">Remifent.Cet<span class="unit">ng/mL</span></th>
           <th class="col-action"></th>
         </tr>
       </thead>
@@ -228,12 +230,12 @@
 
 <script>
   const RANGES = {
-    hr:    { min: 60,  max: 100 },
-    spo2:  { min: 95,  max: 100 },
-    map:   { min: 70,  max: 105 },
-    rr:    { min: 12,  max: 20  },
+    hr:    { min: 50,  max: 110 },
+    spo2:  { min: 95,  max: 100 },   // flags 94 and below (SpO2 must be >94%)
+    map:   { min: 65,  max: 105 },
+    rr:    { min: 8,   max: 20  },
     etco2: { min: 35,  max: 45  },
-    bis:   { min: 40,  max: 60  },
+    bis:   { min: 70,  max: 100 },
   };
 
   let rows = [];
@@ -275,6 +277,7 @@
         time: newTime,
         hr:           prev.hr,
         spo2:         prev.spo2,
+        o2:           prev.o2,
         bp:           prev.bp,
         map:          prev.map,
         rr:           prev.rr,
@@ -284,7 +287,7 @@
         remifentanil: prev.remifentanil,
       };
     } else {
-      newRow = { id: nextId++, time: newTime, hr:'', spo2:'', bp:'', map:'', rr:'', etco2:'', bis:'', propofol:'', remifentanil:'' };
+      newRow = { id: nextId++, time: newTime, hr:'', spo2:'', o2:'', bp:'', map:'', rr:'', etco2:'', bis:'', propofol:'', remifentanil:'' };
     }
 
     rows.push(newRow);
@@ -350,6 +353,9 @@
         <td><input type="number" data-field="spo2" value="${esc(row.spo2)}"
           min="0" max="100" step="1" placeholder="—"
           oninput="updateField(${row.id},'spo2',this.value)"></td>
+        <td><input type="number" data-field="o2" value="${esc(row.o2)}"
+          min="0" max="5" step="0.5" placeholder="—"
+          oninput="updateField(${row.id},'o2',this.value)"></td>
         <td><input type="text" data-field="bp" value="${esc(row.bp)}"
           placeholder="120/80" maxlength="12"
           oninput="updateField(${row.id},'bp',this.value)"></td>
@@ -401,7 +407,7 @@
   function updateOutput() {
     const f = v => (v !== '' && v !== undefined) ? v : '-';
     const lines = rows.map((r, i) =>
-      `Row ${i+1}: Time=${f(r.time)} | HR=${f(r.hr)} | SPO2=${f(r.spo2)} | BP=${f(r.bp)} | MAP=${f(r.map)} | RR=${f(r.rr)} | EtCO2=${f(r.etco2)} | BIS=${f(r.bis)} | Propofol=${f(r.propofol)} | Remifentanil=${f(r.remifentanil)}`
+      `Row ${i+1}: Time=${f(r.time)} | HR=${f(r.hr)} | SPO2=${f(r.spo2)} | O2=${f(r.o2)} | BP=${f(r.bp)} | MAP=${f(r.map)} | RR=${f(r.rr)} | EtCO2=${f(r.etco2)} | BIS=${f(r.bis)} | Prop.Cet=${f(r.propofol)} | Remifent.Cet=${f(r.remifentanil)}`
     ).join('\n');
 
     document.getElementById('outputField').value = lines;
