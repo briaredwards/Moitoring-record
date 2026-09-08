@@ -477,6 +477,19 @@
     }
   }
 
+  // Keep the iframe height in sync: retry during the first seconds (Jotform can
+  // ignore resize requests sent before it finishes loading), then watch for changes.
+  function startResizeWatch() {
+    let attempts = 0;
+    const t = setInterval(function() {
+      resizeFrame();
+      if (++attempts >= 10) clearInterval(t);
+    }, 600);
+    if (window.ResizeObserver) {
+      try { new ResizeObserver(function() { resizeFrame(); }).observe(document.body); } catch(e) {}
+    }
+  }
+
   /* ---- Startup: restore saved data if any, otherwise start with one blank row ---- */
   let initialised = false;
   function safeInit(savedValue) {
@@ -488,6 +501,7 @@
     if (restored) { renderTable(); updateOutput(); }
     else { addRow(); }
     resizeFrame();
+    startResizeWatch();
   }
 
   if (window.JFCustomWidget) {
