@@ -349,34 +349,34 @@
           oninput="onTimeInput(${row.id},this)"
           onblur="onTimeBlur(${row.id},this)"></td>
         <td><input type="number" data-field="hr" value="${esc(row.hr)}"
-          min="0" max="300" step="1" placeholder="—"
+          min="0" max="300" step="1" placeholder="—" onfocus="this.select()"
           oninput="updateField(${row.id},'hr',this.value)"></td>
         <td><input type="number" data-field="spo2" value="${esc(row.spo2)}"
-          min="0" max="100" step="1" placeholder="—"
+          min="0" max="100" step="1" placeholder="—" onfocus="this.select()"
           oninput="updateField(${row.id},'spo2',this.value)"></td>
         <td><input type="number" data-field="o2" value="${esc(row.o2)}"
-          min="0" max="5" step="0.5" placeholder="—"
+          min="0" max="5" step="0.5" placeholder="—" onfocus="this.select()"
           oninput="updateField(${row.id},'o2',this.value)"></td>
         <td><input type="text" data-field="bp" value="${esc(row.bp)}"
-          placeholder="120/80" maxlength="12"
+          placeholder="120/80" maxlength="12" onfocus="this.select()"
           oninput="updateField(${row.id},'bp',this.value)"></td>
         <td><input type="number" data-field="map" value="${esc(row.map)}"
-          min="0" max="200" step="1" placeholder="—"
+          min="0" max="200" step="1" placeholder="—" onfocus="this.select()"
           oninput="updateField(${row.id},'map',this.value)"></td>
         <td><input type="number" data-field="rr" value="${esc(row.rr)}"
-          min="0" max="60" step="1" placeholder="—"
+          min="0" max="60" step="1" placeholder="—" onfocus="this.select()"
           oninput="updateField(${row.id},'rr',this.value)"></td>
         <td><input type="number" data-field="etco2" value="${esc(row.etco2)}"
-          min="0" max="100" step="1" placeholder="—"
+          min="0" max="100" step="1" placeholder="—" onfocus="this.select()"
           oninput="updateField(${row.id},'etco2',this.value)"></td>
         <td><input type="number" data-field="bis" value="${esc(row.bis)}"
-          min="0" max="100" step="1" placeholder="—"
+          min="0" max="100" step="1" placeholder="—" onfocus="this.select()"
           oninput="updateField(${row.id},'bis',this.value)"></td>
         <td><input type="number" data-field="propofol" value="${esc(row.propofol)}"
-          min="0" max="20" step="0.1" placeholder="—"
+          min="0" max="20" step="0.1" placeholder="—" onfocus="this.select()"
           oninput="updateField(${row.id},'propofol',this.value)"></td>
         <td><input type="number" data-field="remifentanil" value="${esc(row.remifentanil)}"
-          min="0" max="20" step="0.1" placeholder="—"
+          min="0" max="20" step="0.1" placeholder="—" onfocus="this.select()"
           oninput="updateField(${row.id},'remifentanil',this.value)"></td>
         <td><button class="btn-delete" onclick="deleteRow(${row.id})" title="Delete">✕</button></td>
       `;
