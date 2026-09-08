@@ -202,7 +202,7 @@
         <tr>
           <th class="col-time">Time</th>
           <th class="col-hr">HR<span class="unit">50–110</span></th>
-          <th class="col-spo2">SPO2<span class="unit">&gt;94%</span></th>
+          <th class="col-spo2">SPO2<span class="unit">&#8805;94%</span></th>
           <th class="col-o2">O2<span class="unit">l/min 0–5</span></th>
           <th class="col-bp">BP<span class="unit">sys/dia</span></th>
           <th class="col-map">MAP<span class="unit">65–105</span></th>
@@ -228,10 +228,11 @@
 
 <textarea id="outputField" name="q_monitoringRecord"></textarea>
 
+<script src="https://js.jotform.com/JotFormCustomWidget.min.js"></script>
 <script>
   const RANGES = {
     hr:    { min: 50,  max: 110 },
-    spo2:  { min: 95,  max: 100 },   // flags 94 and below (SpO2 must be >94%)
+    spo2:  { min: 94,  max: 100 },   // 94 normal; flags 93 and below
     map:   { min: 65,  max: 105 },
     rr:    { min: 8,   max: 20  },
     etco2: { min: 35,  max: 45  },
@@ -384,6 +385,7 @@
     });
     document.getElementById('rowCount').textContent =
       rows.length === 0 ? '0 rows' : `${rows.length} row${rows.length !== 1 ? 's' : ''}`;
+    resizeFrame();
   }
 
   function onTimeInput(id, input) {
@@ -404,23 +406,103 @@
     }
   }
 
-  function updateOutput() {
+  function buildOutput() {
     const f = v => (v !== '' && v !== undefined) ? v : '-';
-    const lines = rows.map((r, i) =>
+    return rows.map((r, i) =>
       `Row ${i+1}: Time=${f(r.time)} | HR=${f(r.hr)} | SPO2=${f(r.spo2)} | O2=${f(r.o2)} | BP=${f(r.bp)} | MAP=${f(r.map)} | RR=${f(r.rr)} | EtCO2=${f(r.etco2)} | BIS=${f(r.bis)} | Prop.Cet=${f(r.propofol)} | Remifent.Cet=${f(r.remifentanil)}`
     ).join('\n');
+  }
 
+  function updateOutput() {
+    const lines = buildOutput();
     document.getElementById('outputField').value = lines;
-
-    try {
-      const jf = window.parent.document.querySelector('input[name="q_monitoringRecord"],textarea[name="q_monitoringRecord"]');
-      if (jf) jf.value = lines;
-    } catch(e) {}
+    persistLocal();
+    if (window.JFCustomWidget) {
+      try { JFCustomWidget.sendData({ value: lines }); } catch(e) {}
+    }
     try { window.parent.postMessage({ type: 'monitoringRecord', data: lines }, '*'); } catch(e) {}
   }
 
-  // Start with one blank row
-  addRow();
+  /* ---- Local backup so a reload / resumed draft doesn't wipe the chart ---- */
+  const STORAGE_KEY = 'monitoringRecordRows_v1';
+
+  function persistLocal() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ rows: rows, nextId: nextId })); } catch(e) {}
+  }
+
+  function restoreLocal() {
+    try {
+      const s = localStorage.getItem(STORAGE_KEY);
+      if (!s) return false;
+      const d = JSON.parse(s);
+      if (d && Array.isArray(d.rows) && d.rows.length) {
+        rows = d.rows;
+        nextId = Math.max.apply(null, rows.map(r => r.id || 0)) + 1;
+        return true;
+      }
+    } catch(e) {}
+    return false;
+  }
+
+  /* ---- Rebuild rows from a previously saved submission value ---- */
+  function parseSavedValue(text) {
+    if (!text || !String(text).trim()) return false;
+    const fieldMap = {
+      'Time':'time','HR':'hr','SPO2':'spo2','O2':'o2','BP':'bp','MAP':'map','RR':'rr',
+      'EtCO2':'etco2','BIS':'bis','Prop.Cet':'propofol','Remifent.Cet':'remifentanil',
+      'Propofol':'propofol','Remifentanil':'remifentanil'
+    };
+    const parsed = [];
+    String(text).split('\n').forEach(line => {
+      const m = line.match(/^Row \d+:\s*(.*)$/);
+      if (!m) return;
+      const row = { id: nextId++, time:'', hr:'', spo2:'', o2:'', bp:'', map:'', rr:'', etco2:'', bis:'', propofol:'', remifentanil:'' };
+      m[1].split('|').forEach(part => {
+        const idx = part.indexOf('=');
+        if (idx === -1) return;
+        const key = part.slice(0, idx).trim();
+        const val = part.slice(idx + 1).trim();
+        const field = fieldMap[key];
+        if (field) row[field] = (val === '-') ? '' : val;
+      });
+      parsed.push(row);
+    });
+    if (parsed.length) { rows = parsed; return true; }
+    return false;
+  }
+
+  function resizeFrame() {
+    if (window.JFCustomWidget) {
+      try { JFCustomWidget.requestFrameResize({ height: document.body.scrollHeight + 24 }); } catch(e) {}
+    }
+  }
+
+  /* ---- Startup: restore saved data if any, otherwise start with one blank row ---- */
+  let initialised = false;
+  function safeInit(savedValue) {
+    if (initialised) return;
+    initialised = true;
+    let restored = false;
+    if (savedValue) restored = parseSavedValue(savedValue);
+    if (!restored)  restored = restoreLocal();
+    if (restored) { renderTable(); updateOutput(); }
+    else { addRow(); }
+    resizeFrame();
+  }
+
+  if (window.JFCustomWidget) {
+    JFCustomWidget.subscribe('ready', function(data) {
+      safeInit(data && data.value ? data.value : '');
+    });
+    JFCustomWidget.subscribe('submit', function() {
+      JFCustomWidget.sendSubmit({ valid: true, value: buildOutput() });
+      try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+    });
+    // Fallback if the widget API never signals ready (e.g. previewing the page directly)
+    setTimeout(function() { safeInit(''); }, 1200);
+  } else {
+    safeInit('');
+  }
 </script>
 </body>
 </html>
